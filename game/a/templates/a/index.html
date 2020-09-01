@@ -61,13 +61,14 @@
             <img src="https://dummyimage.com/700x120/525252/787878" alt="">
         </div>
     </center>
+    {% load static %}
     <div class="row">
         <div class="col-md-6 mt-4" style="height: 400px;">
-            <div class="bg-image" style="background-image: url(img/turkey.gif);"></div>
+            <div class="bg-image" style="background-image: url({% static "a/turkey.gif" %});"></div>
             <div class="bg-text">
                 <center>
                 <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.1); border: 0px; width: 70%;">
-                    <center><img src="img/turkey.gif" class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
+                    <center><img src="{% static "a/turkey.gif" %}" class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
                     <h2 class="mt-2 text-light">Turkey has</h2>
                     <h1 class="text-light">270,000 cases</h1>
                 </div>
