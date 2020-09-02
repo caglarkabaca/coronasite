@@ -10,8 +10,8 @@
 .bg-image {
 
   /* Add the blur effect */
-  filter: blur(12px);
-  -webkit-filter: blur(12px);
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
 
   /* Full height */
   height: 150%;
@@ -52,8 +52,72 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <title>game</title>
+
+    <script>
+        function lose(){
+            Swal.fire({
+                        icon: 'info',
+                        title: 'Game Over',
+                        html: 'Score = {{ score }}',
+                        onAfterClose: () => window.location.assign("../")
+                    })
+        }
+
+        function game(x){
+
+            u1 = {{u1_count_int}}
+            u2 = {{u2_count_int}}
+    
+            if (x == 1)
+            {
+                if (u2 > u1)
+                {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Tebrikler',
+                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
+                        onAfterClose: () => window.location.assign("?score={{score}}")
+                    })
+                    
+                }
+                else
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Malesef',
+                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
+                        onAfterClose: () => lose()
+                    })
+                }
+            }
+
+            if (x == 0)
+            {
+                if (u2 < u1)
+                {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Tebrikler',
+                        html: '{{u1_name}} - <b>{{u1_count}}</b> case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
+                        onAfterClose: () => window.location.assign("?score={{score}}")
+                    })
+                }
+                else
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Malesef',
+                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
+                        onAfterClose: () => lose()
+                    })
+                }
+            }
+    
+        }
+    </script>
+
   </head>
   <body style="background-color: black;">
     <center>
@@ -61,36 +125,43 @@
             <img src="https://dummyimage.com/700x120/525252/787878" alt="">
         </div>
     </center>
-    {% load static%}
+    {% load static %}
     <div class="row">
         <div class="col-md-6 mt-4" style="height: 400px;">
-            <div class="bg-image" style="background-image: url({% static "turkey.gif" %});"></div>
+            <div class="bg-image" style="background-image: url( {% get_static_prefix %}{{ u1_img }}.gif );"></div>
             <div class="bg-text">
                 <center>
-                <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.1); border: 0px; width: 70%;">
-                    <center><img src="{% static "a/turkey.gif" %}" class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
-                    <h2 class="mt-2 text-light">Turkey has</h2>
-                    <h1 class="text-light">270,000 cases</h1>
+                <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.4); border: 0px; width: 70%;">
+                    <center><img src=" {% get_static_prefix %}{{ u1_img }}.gif " class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
+                    <h2 class="mt-2 text-light">{{ u1_name }} has</h2>
+                    <h1 class="text-light" >{{ u1_count }} cases</h1>
                 </div>
                 </center>
             </div>
         </div>
         <div class="col-md-6 mt-4" style="height: 400px;">
-            <div class="bg-image" style="background-image: url(img/brazil.gif);"></div>
+            <div class="bg-image" style="background-image: url( {% get_static_prefix %}{{ u2_img }}.gif );"></div>
             <div class="bg-text">
                 <center>
-                <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.1); border: 0px; width: 70%;">
-                    <center><img src="img/brazil.gif" class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
-                    <h2 class="mt-2 text-light">Brazil has</h2>
+                <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.4); border: 0px; width: 70%;">
+                    <center><img src=" {% get_static_prefix %}{{ u2_img }}.gif " class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
+                    <h2 class="mt-2 text-light">{{ u2_name }} has</h2>
                     <div>
-                        <a href="?add=1" class="btn btn-success mt-2">Higher</a> <br>
-                        <a href="?add=0" class="btn btn-danger mt-1">Lower</a>
+                        <a onclick='game(1)' class="btn btn-success mt-2">Higher</a> <br>
+                        <a onclick='game(0)' class="btn btn-danger mt-1">Lower</a>
                     </div>
-                    <h4 class="text-light">cases then Turkey</h4>
+                    <h4 class="text-light">cases then {{ u1_name }}</h4>
                 </div>
                 </center>
             </div>
         </div>
+        <div class="fixed-bottom">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+                <h1 class="text-center mt-4 text-light border"> Skor = {{ score }}</h1>
+            </div>
+        </div>
+        
     </div>
 
     <!-- Optional JavaScript -->
