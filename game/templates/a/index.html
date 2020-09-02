@@ -54,18 +54,30 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <title>game</title>
-
+ 
     <script>
         function lose(){
             Swal.fire({
                         icon: 'info',
                         title: 'Game Over',
                         html: 'Score = {{ score }}',
-                        onAfterClose: () => window.location.assign("../")
+                        onAfterClose: () => window.location.assign("add?lose=1")
                     })
         }
 
-        function game(x){
+        function win(){
+            Swal.fire({
+                        icon: 'success',
+                        timer : 1250,
+                        timerProgressBar: true,
+                        width : 200,
+                        height: 25,
+                        showConfirmButton: false,
+                        onAfterClose: () => window.location.assign("add?score={{score}}")
+                    }) 
+        }
+
+        function asil_game(x){
 
             u1 = {{u1_count_int}}
             u2 = {{u2_count_int}}
@@ -74,22 +86,11 @@
             {
                 if (u2 > u1)
                 {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Tebrikler',
-                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
-                        onAfterClose: () => window.location.assign("?score={{score}}")
-                    })
-                    
+                    win();           
                 }
                 else
                 {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Malesef',
-                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
-                        onAfterClose: () => lose()
-                    })
+                    lose();
                 }
             }
 
@@ -97,25 +98,58 @@
             {
                 if (u2 < u1)
                 {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Tebrikler',
-                        html: '{{u1_name}} - <b>{{u1_count}}</b> case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
-                        onAfterClose: () => window.location.assign("?score={{score}}")
-                    })
+                    win();
                 }
                 else
                 {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Malesef',
-                        html: '{{u1_name}} - <b>{{u1_count}}</b>  case <br> {{u2_name}} - <b>{{u2_count}}</b>  case',
-                        onAfterClose: () => lose()
-                    })
+                    lose();
                 }
             }
     
         }
+    </script>
+
+    <script>
+
+    function animateValue(id, start, end, duration, x) {
+    // assumes integer values for start and end
+    
+    var obj = document.getElementById(id);
+    var range = end - start;
+    // no timer shorter than 50ms (not really visible any way)
+    var minTimer = 50;
+    // calc step time to show all interediate values
+    var stepTime = Math.abs(Math.floor(duration / range));
+    
+    // never go below minTimer
+    stepTime = Math.max(stepTime, minTimer);
+    
+    // get current time and calculate desired end time
+    var startTime = new Date().getTime();
+    var endTime = startTime + duration;
+    var timer;
+  
+    function run() {
+        var now = new Date().getTime();
+        var remaining = Math.max((endTime - now) / duration, 0);
+        var value = Math.round(end - (remaining * range));
+        obj.innerHTML = "<h1>" + value + " </h1>";
+        if (value == end) {
+            clearInterval(timer);
+            obj.innerHTML = "<h1>{{ u2_count }}</h1>";
+            asil_game(x);
+        }
+    }
+    
+    timer = setInterval(run, stepTime);
+    run();
+    }
+
+    function game(x)
+    {
+        document.getElementById("buttons").innerHTML = "<h1> " + animateValue('buttons', 0, {{ u2_count_int }}, 1000, x) + " </h1>";
+    }
+
     </script>
 
   </head>
@@ -146,7 +180,7 @@
                 <div class="card text-center" style="background-color: rgb(0, 0, 0, 0.4); border: 0px; width: 70%;">
                     <center><img src=" {% get_static_prefix %}{{ u2_img }}.gif " class="mt-4 ss" style="border: 3px solid black;" alt=""></center>
                     <h2 class="mt-2 text-light">{{ u2_name }} has</h2>
-                    <div>
+                    <div id="buttons">
                         <a onclick='game(1)' class="btn btn-success mt-2">Higher</a> <br>
                         <a onclick='game(0)' class="btn btn-danger mt-1">Lower</a>
                     </div>
@@ -158,7 +192,7 @@
         <div class="fixed-bottom">
             <div class="col-md-9"></div>
             <div class="col-md-3">
-                <h1 class="text-center mt-4 text-light border"> Skor = {{ score }}</h1>
+                <h2 class="text-center mt-4 text-light border"> Score = {{ score }}</h2>
             </div>
         </div>
         

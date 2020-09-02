@@ -22,9 +22,9 @@ def index(request):
 
     score = '0'
 
-    if request.GET.get('score', False):
+    if request.session.get('score', False):
 
-        score = str(int(request.GET['score']) + 1)
+        score = request.session['score']
 
     count_one = int(country_one[2].replace(',',''))
     count_two = int(country_two[2].replace(',',''))
@@ -43,3 +43,17 @@ def index(request):
     }
 
     return HttpResponse(template.render(context, request))
+
+def add(request):
+
+    from django.shortcuts import redirect
+
+    if request.GET.get('lose', False):
+
+        if request.session.get('score'):
+            del request.session['score']
+        return redirect('../')
+
+    request.session['score'] = str(int(request.GET['score']) + 1)
+
+    return redirect('../')
